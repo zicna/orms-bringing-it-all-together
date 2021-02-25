@@ -73,18 +73,25 @@ class Dog
 
         dog = DB[:conn].execute(sql, name, breed)
         #binding.pry
-        if dog.empty?
+        if !dog.empty?
             dog_data = dog[0]
             dog = Dog.new(id: dog_data[0], name: dog_data[1], breed: dog_data[2])
-            #dog.save
-        elsif !dog.empty?
-            # binding.pry
+         
             # dog = self.create(name: name, breed: breed)
+               #dog.save
+        else
+            dog = self.create(name: name, breed: breed)
+               
+            
+            # binding.pry
+            # dog = self.new(name: name, breed: breed)
             #dog = self.find_by_name(name)
-            dog = self.find_by_id(dog[0])
+            # dog = self.find_by_id(dog[0][0])
         end
         dog
     end
+
+    
 
     def self.find_by_name(name)
         sql = <<-SQL
