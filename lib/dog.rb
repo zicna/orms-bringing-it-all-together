@@ -80,7 +80,8 @@ class Dog
         elsif !dog.empty?
             # binding.pry
             # dog = self.create(name: name, breed: breed)
-            dog = self.find_by_name(name)
+            #dog = self.find_by_name(name)
+            dog = self.find_by_id(dog[0])
         end
         dog
     end
