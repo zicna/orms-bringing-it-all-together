@@ -33,11 +33,12 @@ class Dog
             SQL
             #binding.pry
             DB[:conn].execute(sql, self.name, self.breed)
-            id = DB[:conn].execute("SELECT last_insert_rowid() FROM dogs")[0][0]
-            self.class.find_by_id(id)
-            # d = Dog.new
-            # d
+            @id = DB[:conn].execute("SELECT last_insert_rowid() FROM dogs")[0][0]
+            self
+        else
+            self.update
         end
+        self
     end
 
     def self.create(name:, breed:)
@@ -54,42 +55,40 @@ class Dog
         sql = <<-SQL
             SELECT * 
             FROM dogs
-            WHERE dogs.id = ?
+            WHERE id = ?
         SQL
         
-        dog = DB[:conn].execute(sql, id).map do |row|
-            self.new_from_db(row)
-        end.first
+        dog = DB[:conn].execute(sql, id)[0]
+        self.new_from_db(dog)
     end
 
     def self.find_or_create_by(name:, breed:)
         sql = <<-SQL
             SELECT *
             FROM dogs
-            WHERE dogs.name = ? 
-            AND dogs.breed = ?
+            WHERE name = ? 
+            AND breed = ?
             LIMIT 1
         SQL
 
-        dog = DB[:conn].execute(sql, name, breed)
+        dog = DB[:conn].execute(sql, name, breed)[0]
         #binding.pry
-        if !dog.empty?
-            binding.pry
-            dog_data = dog[0]
-            dog = Dog.new(id: dog_data[0], name: dog_data[1], breed: dog_data[2])
-         
-            # dog = self.create(name: name, breed: breed)
-               #dog.save
-        else
-            dog = self.create(name: name, breed: breed)
-               
+        if dog
+        #    binding.pry
+            
+            self.find_by_id(dog[0])
+            
+        else 
+            
+            self.create(name: name, breed: breed)
+            # binding.pry  
             
             # binding.pry
             # dog = self.new(name: name, breed: breed)
             #dog = self.find_by_name(name)
             # dog = self.find_by_id(dog[0][0])
         end
-        dog
+        
     end
 
     
@@ -109,8 +108,8 @@ class Dog
     def update
         sql = <<-SQL
             UPDATE dogs
-            SET dogs.name = ?, dogs.breed = ?
-            WHERE dogs.id = ?
+            SET name = ?, breed = ?
+            WHERE id = ?
         SQL
 #binding.pry
         DB[:conn].execute(sql, self.name, self.breed, self.id)
