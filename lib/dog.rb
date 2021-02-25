@@ -72,21 +72,10 @@ class Dog
         SQL
 
         dog = DB[:conn].execute(sql, name, breed)[0]
-        #binding.pry
         if dog
-        #    binding.pry
-            
             self.find_by_id(dog[0])
-            
         else 
-            
             self.create(name: name, breed: breed)
-            # binding.pry  
-            
-            # binding.pry
-            # dog = self.new(name: name, breed: breed)
-            #dog = self.find_by_name(name)
-            # dog = self.find_by_id(dog[0][0])
         end
         
     end
@@ -99,7 +88,6 @@ class Dog
             FROM dogs
             WHERE dogs.name = ?
         SQL
-#binding.pry
         DB[:conn].execute(sql, name).map do |row|
             self.new_from_db(row)
         end.first
@@ -111,7 +99,7 @@ class Dog
             SET name = ?, breed = ?
             WHERE id = ?
         SQL
-#binding.pry
+
         DB[:conn].execute(sql, self.name, self.breed, self.id)
     end
 
