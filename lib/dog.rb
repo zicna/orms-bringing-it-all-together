@@ -74,6 +74,7 @@ class Dog
         dog = DB[:conn].execute(sql, name, breed)
         #binding.pry
         if !dog.empty?
+            binding.pry
             dog_data = dog[0]
             dog = Dog.new(id: dog_data[0], name: dog_data[1], breed: dog_data[2])
          
